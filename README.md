@@ -21,7 +21,7 @@
 <a href="https://www.linkedin.com/in/caio-furtado-de-miranda-carvalho-b2b87a298/">
   <img style="border-radius: 50%" src="https://avatars.githubusercontent.com/u/164534948?v=4" width="100px;" alt=""/>
 </a>
-  <strong>Caio Furtado</strong> @caiofurtado <br>
+  <strong>Caio Furtado</strong> @caiofurtadoo <br>
 <br>
 
 ## Entre em contato!
