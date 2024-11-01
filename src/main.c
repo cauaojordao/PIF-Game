@@ -27,10 +27,10 @@ int snakeLength = 5;
 Point apple;
 Point obstacles[MAX_OBSTACLES];
 int numObstacles = 0;
-int difficulty = 0; // 0: fácil, 1: médio, 2: difícil
-int direction = 0; // 0: right, 1: down, 2: left, 3: up
+int difficulty = 0; 
+int direction = 0; 
 int gameOver = 0;
-int applesEaten = 0; // Para controlar quantas maçãs foram comidas
+int applesEaten = 0; 
 
 // Função protótipos
 void spawnApple();
@@ -46,17 +46,17 @@ void changeDirection(int newDirection);
 void chooseDifficulty();
 
 void initGame() {
-    // Initialize snake position
+    
     for (int i = 0; i < snakeLength; i++) {
-        snake[i].x = 10 - i; // Start snake horizontally
-        snake[i].y = 5;      // Start snake at row 5
+        snake[i].x = 10 - i; 
+        snake[i].y = 5;      
     }
 
-    // Place the first apple
+    
     spawnApple();
 
-    // Initialize obstacles
-    numObstacles = 0; // Reset obstacles count
+    
+    numObstacles = 0; 
     int initialObstacles = (difficulty == 0) ? 5 : (difficulty == 1) ? 10 : 15;
 
     for (int i = 0; i < initialObstacles; i++) {
@@ -89,30 +89,30 @@ void clearPosition(int x, int y) {
 }
 
 void spawnApple() {
-    // Generate a random position for the apple
+    
     do {
         apple.x = rand() % (SCREEN_WIDTH - 2) + 1;
         apple.y = rand() % (SCREEN_HEIGHT - 2) + 1;
-    } while (isPositionOccupied(apple.x, apple.y)); // Ensure the apple doesn't spawn on the snake or obstacles
+    } while (isPositionOccupied(apple.x, apple.y)); 
 
-    // Draw the apple
+    
     screenGotoxy(apple.x, apple.y);
     printf("A");
 }
 
 int isPositionOccupied(int x, int y) {
-    // Check if the position is occupied by the snake or obstacles
+    
     for (int i = 0; i < snakeLength; i++) {
         if (snake[i].x == x && snake[i].y == y) {
-            return 1; // Position occupied by snake
+            return 1; 
         }
     }
     for (int i = 0; i < numObstacles; i++) {
         if (obstacles[i].x == x && obstacles[i].y == y) {
-            return 1; // Position occupied by obstacle
+            return 1; 
         }
     }
-    return 0; // Position is free
+    return 0; 
 }
 
 void spawnObstacle() {
@@ -121,7 +121,7 @@ void spawnObstacle() {
         do {
             newObstacle.x = rand() % (SCREEN_WIDTH - 2) + 1;
             newObstacle.y = rand() % (SCREEN_HEIGHT - 2) + 1;
-        } while (isPositionOccupied(newObstacle.x, newObstacle.y)); // Ensure it doesn't spawn on the snake or existing obstacles
+        } while (isPositionOccupied(newObstacle.x, newObstacle.y)); 
 
         obstacles[numObstacles] = newObstacle;
         numObstacles++;
@@ -131,72 +131,72 @@ void spawnObstacle() {
 void updateGame() {
     if (gameOver) return;
 
-    // Move the snake
+    
     Point newHead = snake[0];
 
-    if (direction == 0) newHead.x++; // Move right
-    else if (direction == 1) newHead.y++; // Move down
-    else if (direction == 2) newHead.x--; // Move left
-    else if (direction == 3) newHead.y--; // Move up
+    if (direction == 0) newHead.x++; 
+    else if (direction == 1) newHead.y++; 
+    else if (direction == 2) newHead.x--; 
+    else if (direction == 3) newHead.y--; 
 
-    // Check for wall collisions
+    
     if (newHead.x <= 0 || newHead.x >= SCREEN_WIDTH || newHead.y <= 0 || newHead.y >= SCREEN_HEIGHT) {
-        gameOver = 1; // Set game over
+        gameOver = 1; 
         return;
     }
 
-    // Check for self-collision
+    
     for (int i = 0; i < snakeLength; i++) {
         if (newHead.x == snake[i].x && newHead.y == snake[i].y) {
-            gameOver = 1; // Set game over
+            gameOver = 1; 
             return;
         }
     }
 
-    // Check for obstacle collisions
+    
     for (int i = 0; i < numObstacles; i++) {
         if (newHead.x == obstacles[i].x && newHead.y == obstacles[i].y) {
-            gameOver = 1; // Set game over
+            gameOver = 1;
             return;
         }
     }
 
-    // Check for apple collision
+    
     if (newHead.x == apple.x && newHead.y == apple.y) {
-        // Grow the snake
+        
         snakeLength++;
         applesEaten++;
 
-        // Place a new apple
+        
         spawnApple();
 
-        // Generate a new obstacle based on difficulty
-        if ((difficulty == 0 && applesEaten % 3 == 0) || // Fácil
-            (difficulty == 1 && applesEaten % 2 == 0) || // Médio
-            (difficulty == 2 && applesEaten % 1 == 0)) { // Difícil
+        
+        if ((difficulty == 0 && applesEaten % 3 == 0) || 
+            (difficulty == 1 && applesEaten % 2 == 0) || 
+            (difficulty == 2 && applesEaten % 1 == 0)) { 
             spawnObstacle();
         }
     } else {
-        // Move the snake
-        clearPosition(snake[snakeLength - 1].x, snake[snakeLength - 1].y); // Clear tail
+        
+        clearPosition(snake[snakeLength - 1].x, snake[snakeLength - 1].y); 
     }
 
-    // Shift the snake's body
+    
     for (int i = snakeLength - 1; i > 0; i--) {
         snake[i] = snake[i - 1];
     }
 
-    // Update the head of the snake
+    
     snake[0] = newHead;
 
-    // Draw the snake, apple, and obstacles
+    
     drawSnake();
     drawApple();
     drawObstacles();
 }
 
 void changeDirection(int newDirection) {
-    // Prevent reversing direction
+    
     if ((direction == 0 && newDirection != 2) ||
         (direction == 1 && newDirection != 3) ||
         (direction == 2 && newDirection != 0) ||
@@ -236,24 +236,24 @@ int main() {
     chooseDifficulty();
     initGame();
 
-    while (ch != 10 && !gameOver) { // Enter key to exit
-        // Handle user input
+    while (ch != 10 && !gameOver) { 
+        
         if (keyhit()) {
             ch = readch();
-            if (ch == 'w') changeDirection(3); // Up
-            if (ch == 's') changeDirection(1); // Down
-            if (ch == 'a') changeDirection(2); // Left
-            if (ch == 'd') changeDirection(0); // Right
+            if (ch == 'w') changeDirection(3); 
+            if (ch == 's') changeDirection(1);
+            if (ch == 'a') changeDirection(2); 
+            if (ch == 'd') changeDirection(0);
         }
 
-        // Update game state
+        
         if (timerTimeOver() == 1) {
             updateGame();
             screenUpdate();
         }
     }
 
-    // Game over
+    
     screenGotoxy(SCREEN_WIDTH / 2 - 5, SCREEN_HEIGHT / 2);
     printf("Game Over!");
 
