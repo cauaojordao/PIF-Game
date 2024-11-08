@@ -16,6 +16,7 @@
 #define SCREEN_HEIGHT MAXY - 1
 #define MAX_LENGTH 100
 #define MAX_OBSTACLES 20
+#define HIGHSCORE_FILE "highscore.txt"
 
 typedef struct {
     int x;
@@ -31,8 +32,9 @@ int difficulty = 0;
 int direction = 0; 
 int gameOver = 0;
 int applesEaten = 0; 
+int score = 0; 
+int highScores[3] = {0, 0, 0}; 
 
-// Função protótipos
 void spawnApple();
 void spawnObstacle();
 int isPositionOccupied(int x, int y);
@@ -44,24 +46,27 @@ void clearPosition(int x, int y);
 void updateGame();
 void changeDirection(int newDirection);
 void chooseDifficulty();
+void drawScore();
+void loadHighScores();
+void saveHighScore();
 
 void initGame() {
-    
     for (int i = 0; i < snakeLength; i++) {
         snake[i].x = 10 - i; 
         snake[i].y = 5;      
     }
 
-    
     spawnApple();
 
-    
+   
     numObstacles = 0; 
     int initialObstacles = (difficulty == 0) ? 5 : (difficulty == 1) ? 10 : 15;
 
     for (int i = 0; i < initialObstacles; i++) {
         spawnObstacle();
     }
+
+    loadHighScores();
 }
 
 void drawSnake() {
@@ -89,19 +94,17 @@ void clearPosition(int x, int y) {
 }
 
 void spawnApple() {
-    
     do {
         apple.x = rand() % (SCREEN_WIDTH - 2) + 1;
         apple.y = rand() % (SCREEN_HEIGHT - 2) + 1;
     } while (isPositionOccupied(apple.x, apple.y)); 
 
-    
+    // Draw the apple
     screenGotoxy(apple.x, apple.y);
     printf("A");
 }
 
 int isPositionOccupied(int x, int y) {
-    
     for (int i = 0; i < snakeLength; i++) {
         if (snake[i].x == x && snake[i].y == y) {
             return 1; 
@@ -131,7 +134,6 @@ void spawnObstacle() {
 void updateGame() {
     if (gameOver) return;
 
-    
     Point newHead = snake[0];
 
     if (direction == 0) newHead.x++; 
@@ -139,13 +141,11 @@ void updateGame() {
     else if (direction == 2) newHead.x--; 
     else if (direction == 3) newHead.y--; 
 
-    
     if (newHead.x <= 0 || newHead.x >= SCREEN_WIDTH || newHead.y <= 0 || newHead.y >= SCREEN_HEIGHT) {
         gameOver = 1; 
         return;
     }
 
-    
     for (int i = 0; i < snakeLength; i++) {
         if (newHead.x == snake[i].x && newHead.y == snake[i].y) {
             gameOver = 1; 
@@ -153,50 +153,44 @@ void updateGame() {
         }
     }
 
-    
     for (int i = 0; i < numObstacles; i++) {
         if (newHead.x == obstacles[i].x && newHead.y == obstacles[i].y) {
-            gameOver = 1;
+            gameOver = 1; 
             return;
         }
     }
 
-    
     if (newHead.x == apple.x && newHead.y == apple.y) {
-        
+
         snakeLength++;
         applesEaten++;
+        score += (difficulty == 0) ? 10 : (difficulty == 1) ? 15 : 20; 
 
-        
         spawnApple();
 
-        
         if ((difficulty == 0 && applesEaten % 3 == 0) || 
             (difficulty == 1 && applesEaten % 2 == 0) || 
             (difficulty == 2 && applesEaten % 1 == 0)) { 
             spawnObstacle();
         }
     } else {
-        
         clearPosition(snake[snakeLength - 1].x, snake[snakeLength - 1].y); 
     }
 
-    
     for (int i = snakeLength - 1; i > 0; i--) {
         snake[i] = snake[i - 1];
     }
 
-    
     snake[0] = newHead;
 
-    
     drawSnake();
     drawApple();
     drawObstacles();
+    drawScore();  
 }
 
 void changeDirection(int newDirection) {
-    
+
     if ((direction == 0 && newDirection != 2) ||
         (direction == 1 && newDirection != 3) ||
         (direction == 2 && newDirection != 0) ||
@@ -225,8 +219,39 @@ void chooseDifficulty() {
     }
 }
 
+void drawScore() {
+    screenGotoxy(1, 1);  
+    printf("Pontuação: %d", score);
+    screenGotoxy(1, 2);  
+    printf("High Score: %d", highScores[difficulty]);
+}
+
+void loadHighScores() {
+    FILE *file = fopen(HIGHSCORE_FILE, "r");
+    if (file != NULL) {
+        for (int i = 0; i < 3; i++) {
+            fscanf(file, "%d", &highScores[i]);
+        }
+        fclose(file);
+    }
+}
+
+void saveHighScore() {
+    if (score > highScores[difficulty]) {
+        highScores[difficulty] = score;
+    }
+
+    FILE *file = fopen(HIGHSCORE_FILE, "w");
+    if (file != NULL) {
+        for (int i = 0; i < 3; i++) {
+            fprintf(file, "%d\n", highScores[i]);
+        }
+        fclose(file);
+    }
+}
+
 int main() {
-    static int ch = 0;
+    int ch = 0;
 
     screenInit(1);
     keyboardInit();
@@ -237,13 +262,13 @@ int main() {
     initGame();
 
     while (ch != 10 && !gameOver) { 
-        
+
         if (keyhit()) {
             ch = readch();
             if (ch == 'w') changeDirection(3); 
-            if (ch == 's') changeDirection(1);
+            if (ch == 's') changeDirection(1); 
             if (ch == 'a') changeDirection(2); 
-            if (ch == 'd') changeDirection(0);
+            if (ch == 'd') changeDirection(0); 
         }
 
         
@@ -254,6 +279,8 @@ int main() {
     }
 
     
+    saveHighScore();
+
     screenGotoxy(SCREEN_WIDTH / 2 - 5, SCREEN_HEIGHT / 2);
     printf("Game Over!");
 
