@@ -32,6 +32,4 @@
 ## Preview do Projeto
 
 <br>
-<p width="100%" align="center">
-  Projeto em desenvolvimento...
-</p>
+<img src="https://github.com/user-attachments/assets/89c2d1f0-a5f2-414e-aabc-9523dc6d2708" width="100%" align="center"/>
