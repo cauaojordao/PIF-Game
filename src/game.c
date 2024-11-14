@@ -1,11 +1,11 @@
 #include "game.h"
 #include "highscore.h"
-#include <stdlib.h>  // Para rand() e srand()
-#include <time.h>    // Para time()
+#include <stdlib.h>  
+#include <time.h>    
 
-Point* snake;  // Agora usamos ponteiros
+Point* snake;  
 Point* apple;
-Point* obstacles;  // Usamos ponteiros aqui também
+Point* obstacles;  
 int snakeLength = 5;
 int numObstacles = 0;
 int difficulty = 0;
@@ -47,9 +47,9 @@ void spawnObstacle(Point* obstacles) {
 }
 
 void initGame() {
-    snake = malloc(MAX_LENGTH * sizeof(Point));  // Aloca memória para o snake
-    apple = malloc(sizeof(Point));  // Aloca memória para a apple
-    obstacles = malloc(MAX_OBSTACLES * sizeof(Point));  // Aloca memória para os obstáculos
+    snake = malloc(MAX_LENGTH * sizeof(Point));  
+    apple = malloc(sizeof(Point));  
+    obstacles = malloc(MAX_OBSTACLES * sizeof(Point));  
 
     for (int i = 0; i < snakeLength; i++) {
         snake[i].x = 10 - i;
