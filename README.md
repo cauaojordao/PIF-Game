@@ -2,7 +2,7 @@
 
 <p align="justify">
   
-  Projeto em desenvolvimento, utilizando do [CLI-Lib](https://github.com/tgfb/cli-lib) 🚧
+  Jogo da cobrinha com obstáculos e dificuldades. Feito utilizando a [CLI-Lib](https://github.com/tgfb/cli-lib) 🚧
   
 </p>
 <br>
